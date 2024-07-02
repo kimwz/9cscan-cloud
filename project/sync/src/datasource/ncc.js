@@ -1,5 +1,10 @@
 const axios = require("axios")
 
+const JWTHeaders = {
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${process.env.graphqlJwt}`
+}
+
 class NccDatasource {
   constructor() {
     this.endpoints = JSON.parse(process.env.graphqlEndpoints)
@@ -11,6 +16,7 @@ class NccDatasource {
       let {data} = await axios.create({timeout: 10000})({
         method: 'POST',
         url: endpoint,
+        headers: JWTHeaders,
         data: {
           "variables":{"address": address},
           "query":`
@@ -88,6 +94,7 @@ class NccDatasource {
         let {data} = await axios.create({timeout: 10000})({
           method: 'POST',
           url: endpoint,
+          headers: JWTHeaders,
           data: {
             "variables":{"offset": 0},
             "query":`
@@ -125,6 +132,7 @@ class NccDatasource {
       let {data} = await axios({
         method: 'POST',
         url: endpoint,
+        headers: JWTHeaders,
         data: {
           "variables":{"index":index},
           "query":`
@@ -172,6 +180,7 @@ class NccDatasource {
       let {data} = await axios({
         method: 'POST',
         url: endpoint,
+        headers: JWTHeaders,
         data: {
           "variables":{"txId":txId},
           "query":`

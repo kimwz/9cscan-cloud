@@ -87,7 +87,7 @@ app.get('/status', async function(req, res) {
       promises.push(new Promise(async (resolve, reject) => {
         let endpoint = ncc.endpoints[i]
         try {
-          let blockIndex = await ncc.getLatestBlockIndex(i, 10000)
+          let blockIndex = await ncc.getLatestBlockIndex(i, 2000)
           nodes.push({endpoint, blockIndex})
         } catch(e) {
           nodes.push({endpoint, blockIndex: null})
@@ -158,6 +158,8 @@ app.get('/account', async function(req, res) {
     res.send(await dynamo.getAccountStates(req.query.address.toLowerCase()))
   } else if (req.query.avatar) {
     res.send(await dynamo.getAccountStatesByAvatar(req.query.avatar.toLowerCase()))
+  } else {
+    res.send({error: 'required parameters address or avatar'})
   }
 });
 

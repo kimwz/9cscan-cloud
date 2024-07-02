@@ -69,11 +69,15 @@ class Fetcher {
     }
     
     async getBlockByIndexWithTxs(index) {
-        const block = await this.getBlockByIndex(index, BLOCK_FULL_ATTRS)
-        if (block.transactions.length === 0 && block.transactionCount > 0) {
-            block.transactions = await this.getTransactionsByBlock(index)
+        try {
+            const block = await this.getBlockByIndex(index, BLOCK_FULL_ATTRS)
+            if (block.transactions.length === 0 && block.transactionCount > 0) {
+                block.transactions = await this.getTransactionsByBlock(index)
+            }
+            return block;
+        } catch (e) {
+            return null;
         }
-        return block;
     }
     
     async getBlockByIndex(index, attrs = BLOCK_LIST_ATTRS) {

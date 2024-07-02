@@ -1,5 +1,10 @@
 const axios = require("axios")
 
+const JWTHeaders = {
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${process.env.graphqlJwt}`
+}
+
 class NccDatasource {
   constructor() {
     this.endpoints = JSON.parse(process.env.graphqlEndpoints)
@@ -11,6 +16,7 @@ class NccDatasource {
       let {data} = await axios.create({timeout: 10000})({
         method: 'POST',
         url: endpoint,
+        headers: JWTHeaders,
         data: {
           "variables":{"address": address},
           "query":`
@@ -83,7 +89,7 @@ class NccDatasource {
     let response = {}
     for (let endpointIndex = 0; endpointIndex < this.endpoints.length; endpointIndex++) {
       try {
-        let latestIndex = await this.getLatestBlockIndex(endpointIndex)
+        let latestIndex = await this.getLatestBlockIndex(endpointIndex, 3000)
         if (latestIndex) {
           response = {latestIndex, endpointIndex}
           if (lastBlockIndex < latestIndex || (endpointIndex + 1) == this.endpoints.length) {
@@ -103,6 +109,7 @@ class NccDatasource {
       let {data} = await axios.create({timeout})({
         method: 'POST',
         url: endpoint,
+        headers: JWTHeaders,
         data: {
           "variables":{"offset": 0},
           "query":`
@@ -134,6 +141,7 @@ class NccDatasource {
       let {data} = await axios({
         method: 'POST',
         url: endpoint,
+        headers: JWTHeaders,
         data: {
           "variables":{"index":index},
           "query":`
@@ -181,6 +189,7 @@ class NccDatasource {
       let {data} = await axios({
         method: 'POST',
         url: endpoint,
+        headers: JWTHeaders,
         data: {
           "variables":{"txId":txId},
           "query":`
@@ -269,6 +278,7 @@ class NccDatasource {
       let {data} = await axios({
         method: 'POST',
         url: endpoint,
+        headers: JWTHeaders,
         data: {
           query: `query getAvatarImages {
             stateQuery { ${innerQuery} }
